@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#FF6B9D">
+  <meta name="description" content="QuizRush - 50 Levels of Fun! Test your knowledge with 250 unique questions.">
+  <title>QuizRush — 50 Levels of Fun</title>
+  <link rel="icon" type="image/png" href="quizrush.png">
+
+  <!-- ✅ Google AdSense verification (your exact ID) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9276338634536607"
+     crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* Start Screen Styles */
+    .start-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ff6b9d, #ff8fb7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .start-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .game-logo {
+      width: 140px;
+      height: 140px;
+      border-radius: 25%;
+      object-fit: cover;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+      animation: logoPop 1.2s ease;
+    }
+
+    @keyframes logoPop {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    h1 {
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .spinner {
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-top: 5px solid #fff;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      animation: spin 1s linear infinite;
+      margin: 10px 0 20px 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #startGameBtn {
+      background: #fff;
+      color: #ff6b9d;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(255, 107, 157, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    #startGameBtn:hover {
+      background: #ffe6ef;
+      transform: scale(1.05);
+    }
+
+    /* Ad styling (invisible during review, visible after approval) */
+    .ad-container {
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ✅ Start Screen -->
+  <div id="startScreen" class="start-screen">
+    <img src="quizrush.png" alt="QuizRush Logo" class="game-logo">
+    <h1>QuizRush</h1>
+    <div class="spinner"></div>
+    <button id="startGameBtn">Start Game</button>
+
+    <!-- ✅ Small banner ad below Start button -->
+    <div class="ad-container">
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-9276338634536607"
+        data-ad-slot="1234567890"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </div>
+
+  <!-- ✅ Game UI -->
+  <div class="game-container" style="display: none;">
+    <div class="header">
+      <div class="level-info">
+        <h2>Level <span id="currentLevel">1</span> / 50</h2>
+        <p>Score: <span id="totalScore">0</span></p>
+      </div>
+      <div class="timer-container">
+        <div class="timer-bar" id="timerBar"></div>
+        <div class="timer-text" id="timerText">10</div>
+      </div>
+    </div>
+
+    <div class="game-card" id="gameCard">
+      <div class="question-counter">
+        Question <span id="questionNumber">1</span> / 5
+      </div>
+      <div class="question-text" id="questionText">Loading question...</div>
+
+      <div class="answers" id="answersContainer">
+        <button class="answer-btn" data-index="0"></button>
+        <button class="answer-btn" data-index="1"></button>
+        <button class="answer-btn" data-index="2"></button>
+        <button class="answer-btn" data-index="3"></button>
+      </div>
+
+      <button class="next-btn" id="nextBtn" style="display: none;">Next Question →</button>
+    </div>
+
+    <div class="level-progress">
+      <p>Level Progress: <span id="correctAnswers">0</span> / 5 correct (need 3 to pass)</p>
+    </div>
+  </div>
+
+  <!-- ✅ Inter-level Ad (below modal) -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Level Cleared! 🎉</h2>
+      <p id="modalText">You got 4 out of 5 correct!</p>
+      <button class="modal-btn" id="modalBtn">Continue</button>
+
+      <!-- 📍 Ad placeholder between levels -->
+      <div class="ad-container">
+        <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9276338634536607"
+          data-ad-slot="9876543210"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <script src="confetti.browser.min.js"></script>
+  <script src="sounds.js"></script>
+  <script src="game.js"></script>
+
+  <!-- ✅ Start Game Trigger -->
+  <script>
+    window.addEventListener("load", () => {
+      const startScreen = document.getElementById("startScreen");
+      const startButton = document.getElementById("startGameBtn");
+      const gameContainer = document.querySelector(".game-container");
+
+      startButton.addEventListener("click", () => {
+        startScreen.classList.add("hidden");
+
+        setTimeout(() => {
+          startScreen.style.display = "none";
+          gameContainer.style.display = "block";
+
+          // ✅ Start the game only when button is clicked
+          if (typeof init === "function") {
+            init();
+          }
+        }, 600);
+      });
+    });
+  </script>
+
+</body>
+</html>
